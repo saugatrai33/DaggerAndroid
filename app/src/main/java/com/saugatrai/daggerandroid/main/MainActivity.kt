@@ -10,10 +10,15 @@ import com.saugatrai.daggerandroid.R
 import com.saugatrai.daggerandroid.login.LoginActivity
 import com.saugatrai.daggerandroid.registration.RegistrationActivity
 import com.saugatrai.daggerandroid.settings.SettingsActivity
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainViewModel: MainViewModel
+    @Inject
+    lateinit var userManager: com.saugatrai.daggerandroid.user.UserManager
+
+    @Inject
+    lateinit var mainViewModel: MainViewModel
 
     /**
      * If the User is not registered, RegistrationActivity will be launched,
@@ -21,9 +26,9 @@ class MainActivity : AppCompatActivity() {
      * else carry on with MainActivity
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as App).appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
-        val userManager = (application as App).userManager
         if (!userManager.isUserLoggedIn()) {
             if (!userManager.isUserRegistered()) {
                 startActivity(Intent(this, RegistrationActivity::class.java))
@@ -34,8 +39,6 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             setContentView(R.layout.activity_main)
-
-            mainViewModel = MainViewModel(userManager.userDataRepository!!)
             setupViews()
         }
     }

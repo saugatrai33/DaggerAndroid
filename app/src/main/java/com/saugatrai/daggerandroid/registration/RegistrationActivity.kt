@@ -4,16 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.saugatrai.daggerandroid.App
-import com.saugatrai.daggerandroid.main.MainActivity
 import com.saugatrai.daggerandroid.R
+import com.saugatrai.daggerandroid.main.MainActivity
 import com.saugatrai.daggerandroid.registration.enterdetails.EnterDetailsFragment
 import com.saugatrai.daggerandroid.registration.termsconditions.TermsAndConditionsFragment
+import javax.inject.Inject
 
 class RegistrationActivity : AppCompatActivity() {
 
+    lateinit var registrationComponent: RegistrationComponent
+
+    @Inject
     lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        registrationComponent = (application as App).appComponent
+            .registrationComponent().create()
+        registrationComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 

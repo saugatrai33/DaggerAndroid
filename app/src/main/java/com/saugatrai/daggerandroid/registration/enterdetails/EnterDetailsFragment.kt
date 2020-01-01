@@ -1,5 +1,6 @@
 package com.saugatrai.daggerandroid.registration.enterdetails
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.saugatrai.daggerandroid.R
 import com.saugatrai.daggerandroid.registration.RegistrationActivity
+import com.saugatrai.daggerandroid.registration.RegistrationComponent
 import com.saugatrai.daggerandroid.registration.RegistrationViewModel
+import javax.inject.Inject
 
 class EnterDetailsFragment : Fragment() {
 
@@ -25,12 +28,20 @@ class EnterDetailsFragment : Fragment() {
      * They could get combined but for the sake of the codelab, we're separating them so we have
      * different ViewModels with different lifecycles.
      */
-    private lateinit var registrationViewModel: RegistrationViewModel
-    private lateinit var enterDetailsViewModel: EnterDetailsViewModel
+    @Inject
+    lateinit var registrationViewModel: RegistrationViewModel
+
+    @Inject
+    lateinit var enterDetailsViewModel: EnterDetailsViewModel
 
     private lateinit var errorTextView: TextView
     private lateinit var usernameEditText: EditText
     private lateinit var passwordEditText: EditText
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as RegistrationComponent).inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +49,6 @@ class EnterDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_enter_details, container, false)
-
-        registrationViewModel = (activity as RegistrationActivity).registrationViewModel
-
-        enterDetailsViewModel = EnterDetailsViewModel()
         enterDetailsViewModel.enterDetailsState.observe(this,
             Observer<EnterDetailsViewState> { state ->
                 when (state) {
